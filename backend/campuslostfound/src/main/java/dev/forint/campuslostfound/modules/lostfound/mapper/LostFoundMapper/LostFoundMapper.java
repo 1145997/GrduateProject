@@ -1,4 +1,9 @@
-package dev.forint.campuslostfound.modules.lostfound.mapper.LostFoundMapper;
+package dev.forint.campuslostfound.modules.lostfound.mapper;
 
-public class LostFoundMapper {
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import dev.forint.campuslostfound.modules.lostfound.entity.LostFound;
+import org.apache.ibatis.annotations.Mapper;
+
+@Mapper
+public interface LostFoundMapper extends BaseMapper<LostFound> {
 }
