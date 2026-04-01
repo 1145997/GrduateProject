@@ -1,0 +1,42 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: campus-lost-found
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: dev.forint.campuslostfound.modules.*.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+
+jwt:
+  secret: your-very-strong-secret-key-change-this-at-least-32-bytes
+  expiration: 86400000
+  header: Authorization
+  token-prefix: Bearer
+
+minio:
+  endpoint: http://127.0.0.1:9000
+  access-key: minioadmin
+  secret-key: minioadmin
+  bucket-name: campus-lost-found
+  read-path: http://127.0.0.1:9000/campus-lost-found
+
+logging:
+  level:
+    root: info
+    dev.forint.campuslostfound: debug
