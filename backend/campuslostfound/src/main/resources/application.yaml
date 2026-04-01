@@ -30,11 +30,11 @@ jwt:
   token-prefix: Bearer
 
 minio:
-  endpoint: http://127.0.0.1:9000
-  access-key: minioadmin
-  secret-key: minioadmin
+  endpoint: http://8.133.16.236:9001
+  access-key: admin
+  secret-key: 0d00@0721
   bucket-name: campus-lost-found
-  read-path: http://127.0.0.1:9000/campus-lost-found
+  read-path: http://8.133.16.236:9001/campus-lost-found
 
 logging:
   level:

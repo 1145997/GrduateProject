@@ -1,4 +1,9 @@
-package dev.forint.campuslostfound.modules.category.mapper.CategoryMapper;
+package dev.forint.campuslostfound.modules.category.mapper;
 
-public class CategoryMapper {
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import dev.forint.campuslostfound.modules.category.entity.Category;
+import org.apache.ibatis.annotations.Mapper;
+
+@Mapper
+public interface CategoryMapper extends BaseMapper<Category> {
 }
