@@ -44,4 +44,32 @@ public class LostFoundController {
     public Result<LostFoundDetailVO> detail(@PathVariable Long id) {
         return Result.success(lostFoundService.getDetail(id));
     }
+
+    @GetMapping("/my")
+    public Result<Map<String, Object>> myList(
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize
+    ) {
+        Page<LostFoundListVO> page = lostFoundService.getMyPage(pageNum, pageSize);
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("list", page.getRecords());
+        data.put("total", page.getTotal());
+        data.put("pageNum", page.getCurrent());
+        data.put("pageSize", page.getSize());
+
+        return Result.success(data);
+    }
+
+    @DeleteMapping("/{id}")
+    public Result<Void> delete(@PathVariable Long id) {
+        lostFoundService.deleteMyById(id);
+        return Result.success("删除成功", null);
+    }
+
+    @PutMapping("/{id}")
+    public Result<Void> update(@PathVariable Long id, @RequestBody @Valid LostFoundAddDTO dto) {
+        lostFoundService.updateMyById(id, dto);
+        return Result.success("修改成功，已重新进入审核", null);
+    }
 }

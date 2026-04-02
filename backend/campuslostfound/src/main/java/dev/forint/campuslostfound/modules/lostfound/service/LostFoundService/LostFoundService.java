@@ -7,6 +7,7 @@ import dev.forint.campuslostfound.modules.lostfound.dto.LostFoundQueryDTO;
 import dev.forint.campuslostfound.modules.lostfound.entity.LostFound;
 import dev.forint.campuslostfound.modules.lostfound.vo.LostFoundDetailVO;
 import dev.forint.campuslostfound.modules.lostfound.vo.LostFoundListVO;
+import dev.forint.campuslostfound.modules.lostfound.dto.AdminLostFoundQueryDTO;
 
 public interface LostFoundService extends IService<LostFound> {
 
@@ -19,4 +20,14 @@ public interface LostFoundService extends IService<LostFound> {
     void approve(Long id);
 
     void reject(Long id, String auditReason);
+
+    Page<LostFoundListVO> getMyPage(Integer pageNum, Integer pageSize);
+
+    void deleteMyById(Long id);
+
+    void updateMyById(Long id, LostFoundAddDTO dto);
+
+    Page<LostFoundListVO> getAdminPage(AdminLostFoundQueryDTO dto);
+
+    Page<LostFoundListVO> getPendingPage(Integer pageNum, Integer pageSize);
 }

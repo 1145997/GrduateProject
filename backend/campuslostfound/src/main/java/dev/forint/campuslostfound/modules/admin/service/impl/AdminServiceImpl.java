@@ -21,12 +21,18 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     @Override
     public Map<String, Object> login(String username, String password) {
         Admin admin = this.getOne(new LambdaQueryWrapper<Admin>()
-                .eq(Admin::getUsername, username)
-                .eq(Admin::getPassword, password)
-                .eq(Admin::getStatus, 1));
+                .eq(Admin::getUsername, username));
 
         if (admin == null) {
             throw new RuntimeException("用户名或密码错误");
+        }
+
+        if (!password.equals(admin.getPassword())) {
+            throw new RuntimeException("用户名或密码错误");
+        }
+
+        if (admin.getStatus() != null && admin.getStatus() == 0) {
+            throw new RuntimeException("该管理员账号已被禁用");
         }
 
         String token = jwtUtils.createToken(admin.getId(), admin.getUsername(), admin.getRole());

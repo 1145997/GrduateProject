@@ -10,18 +10,22 @@ import dev.forint.campuslostfound.modules.lostfound.mapper.LostFoundMapper;
 import dev.forint.campuslostfound.modules.lostfound.service.LostFoundService;
 import dev.forint.campuslostfound.modules.lostfound.vo.LostFoundListVO;
 import dev.forint.campuslostfound.modules.lostfound.vo.LostFoundDetailVO;
+import dev.forint.campuslostfound.common.utils.UserTokenUtils;
+import dev.forint.campuslostfound.modules.lostfound.dto.AdminLostFoundQueryDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 @Service
+@RequiredArgsConstructor
 public class LostFoundServiceImpl extends ServiceImpl<LostFoundMapper, LostFound> implements LostFoundService {
-
+    private final UserTokenUtils userTokenUtils;
     @Override
     public void add(LostFoundAddDTO dto) {
         LostFound lostFound = new LostFound();
         BeanUtils.copyProperties(dto, lostFound);
-        lostFound.setUserId(1L);
+        lostFound.setUserId(userTokenUtils.getCurrentUserId());
         lostFound.setStatus(0);
         lostFound.setViewCount(0);
         this.save(lostFound);
@@ -103,5 +107,128 @@ public class LostFoundServiceImpl extends ServiceImpl<LostFoundMapper, LostFound
         lostFound.setAuditTime(java.time.LocalDateTime.now());
 
         this.updateById(lostFound);
+    }
+
+    @Override
+    public Page<LostFoundListVO> getMyPage(Integer pageNum, Integer pageSize) {
+        Long currentUserId = userTokenUtils.getCurrentUserId();
+
+        Page<LostFound> page = new Page<>(pageNum, pageSize);
+
+        LambdaQueryWrapper<LostFound> wrapper = new LambdaQueryWrapper<LostFound>()
+                .eq(LostFound::getUserId, currentUserId)
+                .orderByDesc(LostFound::getCreateTime);
+
+        Page<LostFound> entityPage = this.page(page, wrapper);
+
+        Page<LostFoundListVO> voPage = new Page<>();
+        voPage.setCurrent(entityPage.getCurrent());
+        voPage.setSize(entityPage.getSize());
+        voPage.setTotal(entityPage.getTotal());
+
+        voPage.setRecords(entityPage.getRecords().stream().map(item -> {
+            LostFoundListVO vo = new LostFoundListVO();
+            BeanUtils.copyProperties(item, vo);
+            return vo;
+        }).toList());
+
+        return voPage;
+    }
+    @Override
+    public void deleteMyById(Long id) {
+        Long currentUserId = userTokenUtils.getCurrentUserId();
+
+        LostFound lostFound = this.getById(id);
+        if (lostFound == null) {
+            throw new RuntimeException("信息不存在");
+        }
+
+        if (!currentUserId.equals(lostFound.getUserId())) {
+            throw new RuntimeException("无权删除他人发布的信息");
+        }
+
+        this.removeById(id);
+    }
+
+    @Override
+    public void updateMyById(Long id, LostFoundAddDTO dto) {
+        Long currentUserId = userTokenUtils.getCurrentUserId();
+
+        LostFound lostFound = this.getById(id);
+        if (lostFound == null) {
+            throw new RuntimeException("信息不存在");
+        }
+
+        if (!currentUserId.equals(lostFound.getUserId())) {
+            throw new RuntimeException("无权修改他人发布的信息");
+        }
+
+        BeanUtils.copyProperties(dto, lostFound);
+
+        // 用户修改后重新进入待审核
+        lostFound.setStatus(0);
+        lostFound.setAuditReason(null);
+        lostFound.setAuditAdminId(null);
+        lostFound.setAuditTime(null);
+        lostFound.setFinishTime(null);
+
+        this.updateById(lostFound);
+    }
+
+    @Override
+    public Page<LostFoundListVO> getAdminPage(AdminLostFoundQueryDTO dto) {
+        Page<LostFound> page = new Page<>(dto.getPageNum(), dto.getPageSize());
+
+        LambdaQueryWrapper<LostFound> wrapper = new LambdaQueryWrapper<>();
+
+        wrapper.eq(dto.getType() != null, LostFound::getType, dto.getType())
+                .eq(dto.getStatus() != null, LostFound::getStatus, dto.getStatus())
+                .and(org.springframework.util.StringUtils.hasText(dto.getKeyword()), w -> w
+                        .like(LostFound::getTitle, dto.getKeyword())
+                        .or()
+                        .like(LostFound::getItemName, dto.getKeyword())
+                        .or()
+                        .like(LostFound::getDescription, dto.getKeyword())
+                        .or()
+                        .like(LostFound::getContactName, dto.getKeyword())
+                )
+                .orderByDesc(LostFound::getCreateTime);
+
+        Page<LostFound> entityPage = this.page(page, wrapper);
+
+        Page<LostFoundListVO> voPage = new Page<>();
+        voPage.setCurrent(entityPage.getCurrent());
+        voPage.setSize(entityPage.getSize());
+        voPage.setTotal(entityPage.getTotal());
+        voPage.setRecords(entityPage.getRecords().stream().map(item -> {
+            LostFoundListVO vo = new LostFoundListVO();
+            BeanUtils.copyProperties(item, vo);
+            return vo;
+        }).toList());
+
+        return voPage;
+    }
+
+    @Override
+    public Page<LostFoundListVO> getPendingPage(Integer pageNum, Integer pageSize) {
+        Page<LostFound> page = new Page<>(pageNum, pageSize);
+
+        LambdaQueryWrapper<LostFound> wrapper = new LambdaQueryWrapper<LostFound>()
+                .eq(LostFound::getStatus, 0)
+                .orderByDesc(LostFound::getCreateTime);
+
+        Page<LostFound> entityPage = this.page(page, wrapper);
+
+        Page<LostFoundListVO> voPage = new Page<>();
+        voPage.setCurrent(entityPage.getCurrent());
+        voPage.setSize(entityPage.getSize());
+        voPage.setTotal(entityPage.getTotal());
+        voPage.setRecords(entityPage.getRecords().stream().map(item -> {
+            LostFoundListVO vo = new LostFoundListVO();
+            BeanUtils.copyProperties(item, vo);
+            return vo;
+        }).toList());
+
+        return voPage;
     }
 }
