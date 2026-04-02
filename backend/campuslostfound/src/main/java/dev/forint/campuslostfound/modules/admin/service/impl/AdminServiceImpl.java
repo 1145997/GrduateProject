@@ -6,6 +6,10 @@ import dev.forint.campuslostfound.common.utils.JwtUtils;
 import dev.forint.campuslostfound.modules.admin.entity.Admin;
 import dev.forint.campuslostfound.modules.admin.mapper.AdminMapper;
 import dev.forint.campuslostfound.modules.admin.service.AdminService;
+import dev.forint.campuslostfound.common.utils.AdminTokenUtils;
+import dev.forint.campuslostfound.modules.admin.vo.AdminInfoVO;
+import org.springframework.beans.BeanUtils;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +19,8 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements AdminService {
-
     private final JwtUtils jwtUtils;
+    private final AdminTokenUtils adminTokenUtils;
 
     @Override
     public Map<String, Object> login(String username, String password) {
@@ -44,5 +48,23 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         data.put("role", admin.getRole());
 
         return data;
+    }
+
+    @Override
+    public AdminInfoVO getCurrentAdminInfo() {
+        Long adminId = adminTokenUtils.getCurrentAdminId();
+
+        Admin admin = this.getById(adminId);
+        if (admin == null) {
+            throw new RuntimeException("管理员不存在");
+        }
+
+        if (admin.getStatus() != null && admin.getStatus() == 0) {
+            throw new RuntimeException("管理员账号已被禁用");
+        }
+
+        AdminInfoVO vo = new AdminInfoVO();
+        BeanUtils.copyProperties(admin, vo);
+        return vo;
     }
 }

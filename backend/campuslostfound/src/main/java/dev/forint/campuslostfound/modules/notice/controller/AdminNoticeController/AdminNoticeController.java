@@ -2,6 +2,7 @@ package dev.forint.campuslostfound.modules.notice.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import dev.forint.campuslostfound.common.api.Result;
+import dev.forint.campuslostfound.common.utils.AdminTokenUtils;
 import dev.forint.campuslostfound.modules.notice.dto.NoticeAddDTO;
 import dev.forint.campuslostfound.modules.notice.entity.Notice;
 import dev.forint.campuslostfound.modules.notice.service.NoticeService;
@@ -17,10 +18,13 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AdminNoticeController {
 
+    private final AdminTokenUtils adminTokenUtils;
     private final NoticeService noticeService;
 
     @PostMapping
     public Result<Void> add(@RequestBody @Valid NoticeAddDTO dto) {
+        adminTokenUtils.checkAdminLogin();
+
         noticeService.add(dto);
         return Result.success("新增公告成功", null);
     }
@@ -30,6 +34,8 @@ public class AdminNoticeController {
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize
     ) {
+        adminTokenUtils.checkAdminLogin();
+
         Page<Notice> page = noticeService.getAdminPage(pageNum, pageSize);
 
         Map<String, Object> data = new HashMap<>();
@@ -43,12 +49,16 @@ public class AdminNoticeController {
 
     @PutMapping("/{id}")
     public Result<Void> update(@PathVariable Long id, @RequestBody @Valid NoticeAddDTO dto) {
+        adminTokenUtils.checkAdminLogin();
+
         noticeService.updateNotice(id, dto);
         return Result.success("修改公告成功", null);
     }
 
     @DeleteMapping("/{id}")
     public Result<Void> delete(@PathVariable Long id) {
+        adminTokenUtils.checkAdminLogin();
+
         noticeService.deleteNotice(id);
         return Result.success("删除公告成功", null);
     }

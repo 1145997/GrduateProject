@@ -1,6 +1,7 @@
 package dev.forint.campuslostfound.modules.comment.controller;
 
 import dev.forint.campuslostfound.common.api.Result;
+import dev.forint.campuslostfound.common.utils.UserTokenUtils;
 import dev.forint.campuslostfound.modules.comment.dto.CommentAddDTO;
 import dev.forint.campuslostfound.modules.comment.service.CommentService;
 import dev.forint.campuslostfound.modules.comment.vo.CommentVO;
@@ -15,10 +16,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentController {
 
+    private final UserTokenUtils userTokenUtils;
     private final CommentService commentService;
 
     @PostMapping
     public Result<Void> add(@RequestBody @Valid CommentAddDTO dto) {
+        userTokenUtils.checkUserLogin();
+
         commentService.add(dto);
         return Result.success("评论成功", null);
     }
@@ -28,5 +32,3 @@ public class CommentController {
         return Result.success(commentService.getListByInfoId(infoId));
     }
 }
-
-

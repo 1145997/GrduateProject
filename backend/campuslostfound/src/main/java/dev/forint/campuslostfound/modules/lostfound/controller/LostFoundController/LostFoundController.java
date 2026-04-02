@@ -2,6 +2,7 @@ package dev.forint.campuslostfound.modules.lostfound.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import dev.forint.campuslostfound.common.api.Result;
+import dev.forint.campuslostfound.common.utils.UserTokenUtils;
 import dev.forint.campuslostfound.modules.lostfound.dto.LostFoundAddDTO;
 import dev.forint.campuslostfound.modules.lostfound.dto.LostFoundQueryDTO;
 import dev.forint.campuslostfound.modules.lostfound.service.LostFoundService;
@@ -19,10 +20,13 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class LostFoundController {
 
+    private final UserTokenUtils userTokenUtils;
     private final LostFoundService lostFoundService;
 
     @PostMapping
     public Result<Void> add(@RequestBody @Valid LostFoundAddDTO dto) {
+        userTokenUtils.checkUserLogin();
+
         lostFoundService.add(dto);
         return Result.success("发布成功", null);
     }
@@ -50,6 +54,8 @@ public class LostFoundController {
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize
     ) {
+        userTokenUtils.checkUserLogin();
+
         Page<LostFoundListVO> page = lostFoundService.getMyPage(pageNum, pageSize);
 
         Map<String, Object> data = new HashMap<>();
@@ -63,12 +69,16 @@ public class LostFoundController {
 
     @DeleteMapping("/{id}")
     public Result<Void> delete(@PathVariable Long id) {
+        userTokenUtils.checkUserLogin();
+
         lostFoundService.deleteMyById(id);
         return Result.success("删除成功", null);
     }
 
     @PutMapping("/{id}")
     public Result<Void> update(@PathVariable Long id, @RequestBody @Valid LostFoundAddDTO dto) {
+        userTokenUtils.checkUserLogin();
+
         lostFoundService.updateMyById(id, dto);
         return Result.success("修改成功，已重新进入审核", null);
     }

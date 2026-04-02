@@ -42,4 +42,23 @@ public class UserTokenUtils {
         Claims claims = jwtUtils.parseToken(token);
         return claims.get("role", String.class);
     }
+
+    public void checkUserLogin() {
+        String tokenHeader = request.getHeader(header);
+        if (tokenHeader == null || !tokenHeader.startsWith(tokenPrefix)) {
+            throw new RuntimeException("用户未登录或token不存在");
+        }
+
+        String token = tokenHeader.substring(tokenPrefix.length());
+        Claims claims = jwtUtils.parseToken(token);
+
+        String role = claims.get("role", String.class);
+        if (role == null || role.isBlank()) {
+            throw new RuntimeException("用户token角色信息缺失");
+        }
+
+        if (!"user".equals(role)) {
+            throw new RuntimeException("无用户权限");
+        }
+    }
 }
