@@ -1,35 +1,40 @@
-const { request } = require("./utils/request")
-const { setToken, setUserInfo } = require("./utils/auth")
+const { login, logout } = require("./utils/login")
 
 App({
   globalData: {
     userInfo: null
   },
 
-  onLaunch() {
-    this.login()
+  async onLaunch() {
+    await this.restoreLogin()
   },
 
-  async login() {
+  async restoreLogin() {
     try {
-      const openid = "test_openid_mini_001"
-
-      const res = await request({
-        url: "/auth/user/login",
-        method: "POST",
-        data: {
-          openid,
-          nickname: "微信用户",
-          avatar: ""
-        }
-      })
-
-      const userInfo = res.data
-      setToken(userInfo.token)
-      setUserInfo(userInfo)
+      const userInfo = await login(false)
       this.globalData.userInfo = userInfo
-    } catch (err) {
-      console.error("小程序登录失败", err)
+      return userInfo
+    } catch (e) {
+      console.error("恢复登录失败", e)
+      this.globalData.userInfo = null
+      return null
     }
+  },
+
+  async relogin() {
+    try {
+      const userInfo = await login(true)
+      this.globalData.userInfo = userInfo
+      return userInfo
+    } catch (e) {
+      console.error("重新登录失败", e)
+      this.globalData.userInfo = null
+      throw e
+    }
+  },
+
+  clearLogin() {
+    logout()
+    this.globalData.userInfo = null
   }
 })

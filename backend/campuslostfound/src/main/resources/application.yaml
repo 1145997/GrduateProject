@@ -45,3 +45,8 @@ logging:
   level:
     root: info
     dev.forint.campuslostfound: debug
+
+wechat:
+  miniapp:
+    appid: wxdf1286da1ad207a9
+    secret: 9fbe84b4ce9c71f9698fbfb3e3bb22e5

@@ -2,6 +2,7 @@ package dev.forint.campuslostfound.modules.user.controller;
 
 import dev.forint.campuslostfound.common.api.Result;
 import dev.forint.campuslostfound.modules.user.dto.UserLoginDTO;
+import dev.forint.campuslostfound.modules.user.dto.WxUserLoginDTO;
 import dev.forint.campuslostfound.modules.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,5 +20,10 @@ public class UserAuthController {
     @PostMapping("/login")
     public Result<Map<String, Object>> login(@RequestBody @Valid UserLoginDTO dto) {
         return Result.success(userService.login(dto));
+    }
+
+    @PostMapping("/wx-login")
+    public Result<Map<String, Object>> wxLogin(@RequestBody @Valid WxUserLoginDTO dto) {
+        return Result.success(userService.wxLogin(dto));
     }
 }

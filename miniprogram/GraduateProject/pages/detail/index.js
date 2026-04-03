@@ -2,98 +2,154 @@ const { request } = require("../../utils/request")
 
 Page({
   data: {
-    list: [],
-    pageNum: 1,
-    pageSize: 10,
-    total: 0,
-    loading: false,
-    finished: false
+    id: null,
+    detail: null,
+    commentList: [],
+    commentContent: "",
+    parentId: null,
+    replyPlaceholder: "写下你的留言…"
   },
 
-  onShow() {
-    this.getList(true)
+  onLoad(options) {
+    const id = options.id
+    this.setData({ id })
+    this.getDetail()
+    this.getCommentList()
   },
 
-  onPullDownRefresh() {
-    this.getList(true)
-  },
-
-  onReachBottom() {
-    this.getList(false)
-  },
-
-  async getList(reset = false) {
-    if (this.data.loading) return
-    if (!reset && this.data.finished) return
-
-    this.setData({ loading: true })
-
-    const pageNum = reset ? 1 : this.data.pageNum
-
+  async getDetail() {
     try {
       const res = await request({
-        url: "/lostfound/my",
-        method: "GET",
-        data: {
-          pageNum,
-          pageSize: this.data.pageSize
-        }
+        url: `/lostfound/${this.data.id}`,
+        method: "GET"
       })
-
-      const data = res.data
-      const newList = reset ? data.list : this.data.list.concat(data.list)
-
       this.setData({
-        list: newList,
-        total: data.total,
-        pageNum: pageNum + 1,
-        finished: newList.length >= data.total
+        detail: res.data
       })
     } catch (e) {
-      console.error("获取我的发布失败", e)
-    } finally {
-      this.setData({ loading: false })
-      wx.stopPullDownRefresh()
+      console.error("获取详情失败", e)
     }
   },
 
-  goDetail(e) {
-    const id = e.currentTarget.dataset.id
-    wx.navigateTo({
-      url: `/pages/detail/index?id=${id}`
+  async getCommentList() {
+    try {
+      const res = await request({
+        url: "/comment/list",
+        method: "GET",
+        data: {
+          infoId: this.data.id
+        }
+      })
+      this.setData({
+        commentList: res.data || []
+      })
+    } catch (e) {
+      console.error("获取评论失败", e)
+    }
+  },
+
+  onCommentInput(e) {
+    this.setData({
+      commentContent: e.detail.value
     })
   },
 
-  deleteItem(e) {
+  replyComment(e) {
     const id = e.currentTarget.dataset.id
+    this.setData({
+      parentId: id,
+      replyPlaceholder: "回复这条评论…"
+    })
+  },
 
-    wx.showModal({
-      title: "提示",
-      content: "确认删除这条发布信息吗？",
-      success: async (res) => {
-        if (!res.confirm) return
+  cancelReply() {
+    this.setData({
+      parentId: null,
+      replyPlaceholder: "写下你的留言…"
+    })
+  },
 
-        try {
-          await request({
-            url: `/lostfound/${id}`,
-            method: "DELETE"
-          })
+  async submitComment() {
+    if (!this.data.commentContent.trim()) {
+      wx.showToast({
+        title: "请输入评论内容",
+        icon: "none"
+      })
+      return
+    }
 
-          wx.showToast({
-            title: "删除成功",
-            icon: "success"
-          })
-
-          this.getList(true)
-        } catch (e) {
-          console.error("删除失败", e)
+    try {
+      await request({
+        url: "/comment",
+        method: "POST",
+        data: {
+          infoId: Number(this.data.id),
+          parentId: this.data.parentId,
+          content: this.data.commentContent.trim()
         }
+      })
+
+      wx.showToast({
+        title: "评论成功",
+        icon: "success"
+      })
+
+      this.setData({
+        commentContent: "",
+        parentId: null,
+        replyPlaceholder: "写下你的留言…"
+      })
+
+      this.getCommentList()
+    } catch (e) {
+      console.error("评论失败", e)
+    }
+  },
+
+  previewImage() {
+    const image = this.data.detail?.image
+    if (!image) return
+
+    wx.previewImage({
+      urls: [image],
+      current: image
+    })
+  },
+
+  callPhone() {
+    const phone = this.data.detail?.contactPhone
+    if (!phone) {
+      wx.showToast({
+        title: "暂无联系电话",
+        icon: "none"
+      })
+      return
+    }
+
+    wx.makePhoneCall({
+      phoneNumber: phone
+    })
+  },
+
+  copyWechat() {
+    const wechat = this.data.detail?.contactWechat
+    if (!wechat) {
+      wx.showToast({
+        title: "暂无微信号",
+        icon: "none"
+      })
+      return
+    }
+
+    wx.setClipboardData({
+      data: wechat,
+      success: () => {
+        wx.showToast({
+          title: "微信号已复制",
+          icon: "none"
+        })
       }
     })
-  },
-
-  getTypeText(type) {
-    return Number(type) === 1 ? "寻物" : "招领"
   },
 
   getStatusText(status) {

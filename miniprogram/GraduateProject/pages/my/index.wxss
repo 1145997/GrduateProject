@@ -28,3 +28,18 @@
 .arrow {
   color: #999;
 }
+
+.menu-btn {
+  margin-bottom: 20rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  background: #f3f4f6;
+  color: #333;
+  border-radius: 14rpx;
+  font-size: 28rpx;
+}
+
+.danger-btn {
+  background: #fee2e2;
+  color: #dc2626;
+}

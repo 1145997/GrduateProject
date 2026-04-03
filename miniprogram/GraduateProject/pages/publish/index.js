@@ -1,6 +1,7 @@
 const { request } = require("../../utils/request")
 const { BASE_URL } = require("../../utils/api")
 const { getToken } = require("../../utils/auth")
+const { requireLogin } = require("../../utils/guard")
 
 Page({
   data: {
@@ -12,6 +13,8 @@ Page({
     categoryNames: [],
     categoryIndex: -1,
     submitting: false,
+    eventDate: "",
+    eventClock: "",
     form: {
       type: 1,
       title: "",
@@ -29,17 +32,13 @@ Page({
     }
   },
 
-  onLoad() {
-    const today = this.getTodayDate()
-    const nowTime = this.getCurrentTime()
-  
-    this.setData({
-      eventDate: today,
-      eventClock: nowTime,
-      "form.eventTime": this.buildEventTime(today, nowTime)
-    })
-  
-    this.getCategoryList()
+  async onLoad() {
+    try {
+      await requireLogin()
+      this.getCategoryList()
+    } catch (e) {
+      console.error("进入发布页时登录校验失败", e)
+    }
   },
 
   async getCategoryList() {
@@ -183,9 +182,9 @@ Page({
     }
   
     // 推荐格式：2026-04-03 14:30:00 或 2026-04-03 14:30
-    const dateTimeReg = /^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}(:\d{2})?$/
+    const dateTimeReg = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/
     if (!dateTimeReg.test(form.eventTime)) {
-      return "事件时间格式应为 2026-04-03 14:30"
+      return "请通过日期和时间选择器填写完整时间"
     }
   
     // 描述
@@ -212,6 +211,12 @@ Page({
     return ""
   },
   async submit() {
+    try {
+      await requireLogin()
+    } catch (e) {
+      return
+    }
+  
     if (this.data.submitting) return
   
     const errorMsg = this.validateForm()
@@ -276,7 +281,7 @@ Page({
   formatNumber(n) {
     return n < 10 ? `0${n}` : `${n}`
   },
-  
+
   getTodayDate() {
     const now = new Date()
     const y = now.getFullYear()
@@ -284,33 +289,33 @@ Page({
     const d = this.formatNumber(now.getDate())
     return `${y}-${m}-${d}`
   },
-  
+
   getCurrentTime() {
     const now = new Date()
     const h = this.formatNumber(now.getHours())
     const m = this.formatNumber(now.getMinutes())
     return `${h}:${m}`
   },
-  
+
   buildEventTime(date, time) {
     if (!date || !time) return ""
-    return `${date} ${time}:00`
+    return `${date}T${time}:00`
   },
-  
+
   onDateChange(e) {
     const date = e.detail.value
     const time = this.data.eventClock || this.getCurrentTime()
-  
+
     this.setData({
       eventDate: date,
       "form.eventTime": this.buildEventTime(date, time)
     })
   },
-  
+
   onTimeChange(e) {
     const time = e.detail.value
     const date = this.data.eventDate || this.getTodayDate()
-  
+
     this.setData({
       eventClock: time,
       "form.eventTime": this.buildEventTime(date, time)

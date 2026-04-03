@@ -10,6 +10,9 @@ import dev.forint.campuslostfound.modules.user.service.UserService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import dev.forint.campuslostfound.modules.user.dto.AdminUserQueryDTO;
 import dev.forint.campuslostfound.modules.user.vo.UserListVO;
+import dev.forint.campuslostfound.modules.user.dto.WxUserLoginDTO;
+import dev.forint.campuslostfound.modules.user.dto.WechatCode2SessionResponse;
+import dev.forint.campuslostfound.modules.user.service.WechatAuthService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +27,7 @@ import java.util.Map;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     private final JwtUtils jwtUtils;
-
+    private final WechatAuthService wechatAuthService;
     @Override
     public Map<String, Object> login(UserLoginDTO dto) {
         User user = this.getOne(new LambdaQueryWrapper<User>()
@@ -124,5 +127,50 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         user.setStatus(status);
         this.updateById(user);
+    }
+
+    @Override
+    public Map<String, Object> wxLogin(WxUserLoginDTO dto) {
+        WechatCode2SessionResponse wxResp = wechatAuthService.code2Session(dto.getCode());
+        String openid = wxResp.getOpenid();
+
+        User user = this.getOne(new LambdaQueryWrapper<User>()
+                .eq(User::getOpenid, openid));
+
+        if (user != null && user.getStatus() != null && user.getStatus() == 0) {
+            throw new RuntimeException("该账号已被禁用");
+        }
+
+        if (user == null) {
+            user = new User();
+            user.setOpenid(openid);
+            user.setNickname(dto.getNickname());
+            user.setAvatar(dto.getAvatar());
+            user.setStatus(1);
+            user.setLastLoginTime(LocalDateTime.now());
+            this.save(user);
+        } else {
+            user.setLastLoginTime(LocalDateTime.now());
+
+            if (dto.getNickname() != null && !dto.getNickname().isBlank()) {
+                user.setNickname(dto.getNickname());
+            }
+            if (dto.getAvatar() != null && !dto.getAvatar().isBlank()) {
+                user.setAvatar(dto.getAvatar());
+            }
+
+            this.updateById(user);
+        }
+
+        String token = jwtUtils.createToken(user.getId(), user.getOpenid(), "user");
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("token", token);
+        data.put("userId", user.getId());
+        data.put("openid", user.getOpenid());
+        data.put("nickname", user.getNickname());
+        data.put("avatar", user.getAvatar());
+
+        return data;
     }
 }

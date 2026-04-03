@@ -10,4 +10,9 @@
       <text class="arrow">></text>
     </view>
   </view>
+
+  <view class="card">
+    <button class="menu-btn" bindtap="handleRelogin">重新登录</button>
+    <button class="menu-btn danger-btn" bindtap="handleLogout">退出登录</button>
+  </view>
 </view>

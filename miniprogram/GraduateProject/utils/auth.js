@@ -25,6 +25,11 @@ function clearUserInfo() {
   wx.removeStorageSync(USER_INFO_KEY)
 }
 
+function clearLoginState() {
+  clearToken()
+  clearUserInfo()
+}
+
 function isLogin() {
   return !!getToken()
 }
@@ -36,5 +41,6 @@ module.exports = {
   getUserInfo,
   setUserInfo,
   clearUserInfo,
+  clearLoginState,
   isLogin
 }

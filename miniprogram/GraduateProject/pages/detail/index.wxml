@@ -1,34 +1,111 @@
-<view class="container">
-  <block wx:if="{{list.length}}">
-    <block wx:for="{{list}}" wx:key="id">
-      <view class="card info-card">
-        <view class="info-main" bindtap="goDetail" data-id="{{item.id}}">
-          <view class="title">{{item.title}}</view>
+<view class="container" wx:if="{{detail}}">
+  <view class="card">
+    <image
+      wx:if="{{detail.image}}"
+      class="detail-image"
+      src="{{detail.image}}"
+      mode="aspectFill"
+      bindtap="previewImage"
+    />
 
-          <view class="meta-row">
-            <text class="tag {{item.type == 1 ? 'tag-lost' : 'tag-found'}}">
-              {{item.type == 1 ? '寻物' : '招领'}}
-            </text>
-            <text class="tag tag-status">{{getStatusText(item.status)}}</text>
+    <view class="title">{{detail.title}}</view>
+
+    <view class="tag-row">
+      <text class="tag {{detail.type == 1 ? 'tag-lost' : 'tag-found'}}">
+        {{detail.type == 1 ? '寻物' : '招领'}}
+      </text>
+      <text class="tag tag-status">{{getStatusText(detail.status)}}</text>
+      <text class="tag tag-status">浏览 {{detail.viewCount}}</text>
+    </view>
+
+    <view class="info-item">
+      <text class="label">物品名称：</text>
+      <text>{{detail.itemName}}</text>
+    </view>
+
+    <view class="info-item" wx:if="{{detail.brand}}">
+      <text class="label">品牌：</text>
+      <text>{{detail.brand}}</text>
+    </view>
+
+    <view class="info-item" wx:if="{{detail.color}}">
+      <text class="label">颜色：</text>
+      <text>{{detail.color}}</text>
+    </view>
+
+    <view class="info-item">
+      <text class="label">地点：</text>
+      <text>{{detail.eventPlace}}</text>
+    </view>
+
+    <view class="info-item">
+      <text class="label">时间：</text>
+      <text>{{detail.eventTime || '-'}}</text>
+    </view>
+
+    <view class="info-item">
+      <text class="label">联系人：</text>
+      <text>{{detail.contactName}}</text>
+    </view>
+
+    <view class="info-item">
+      <text class="label">联系电话：</text>
+      <text>{{detail.contactPhone || '-'}}</text>
+    </view>
+
+    <view class="info-item" wx:if="{{detail.contactWechat}}">
+      <text class="label">微信号：</text>
+      <text>{{detail.contactWechat}}</text>
+    </view>
+
+    <view class="desc-box">
+      <view class="desc-title">详细描述</view>
+      <view class="desc-content">{{detail.description}}</view>
+    </view>
+
+    <view class="action-row">
+      <button class="action-btn btn-primary" bindtap="callPhone">拨打电话</button>
+      <button class="action-btn" bindtap="copyWechat">复制微信</button>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="comment-header">留言评论</view>
+
+    <view wx:if="{{parentId}}" class="reply-tip">
+      正在回复评论 #{{parentId}}
+      <text class="cancel-reply" bindtap="cancelReply">取消回复</text>
+    </view>
+
+    <textarea
+      class="comment-textarea"
+      placeholder="{{replyPlaceholder}}"
+      value="{{commentContent}}"
+      bindinput="onCommentInput"
+    />
+
+    <button class="comment-submit btn-primary" bindtap="submitComment">发送评论</button>
+
+    <view class="comment-list">
+      <block wx:for="{{commentList}}" wx:key="id">
+        <view class="comment-item">
+          <view class="comment-top">
+            <text class="comment-id">#{{item.id}}</text>
+            <text class="comment-time">{{item.createTime}}</text>
           </view>
 
-          <view class="desc">物品：{{item.itemName}}</view>
-          <view class="desc">地点：{{item.eventPlace}}</view>
-          <view class="desc">联系人：{{item.contactName}}</view>
-          <view class="time text-muted">发布时间：{{item.createTime}}</view>
+          <view class="comment-content">
+            <text wx:if="{{item.parentId}}" class="reply-mark">回复 #{{item.parentId}}：</text>
+            {{item.content}}
+          </view>
+
+          <view class="comment-actions">
+            <text class="comment-reply-btn" data-id="{{item.id}}" bindtap="replyComment">回复</text>
+          </view>
         </view>
+      </block>
 
-        <view class="op-row">
-          <button class="mini-btn" data-id="{{item.id}}" bindtap="goDetail">查看</button>
-          <button class="mini-btn danger" data-id="{{item.id}}" bindtap="deleteItem">删除</button>
-        </view>
-      </view>
-    </block>
-  </block>
-
-  <view wx:else class="empty">你还没有发布过信息</view>
-
-  <view class="load-text text-muted">
-    {{finished ? '没有更多了' : (loading ? '加载中...' : '')}}
+      <view wx:if="{{!commentList.length}}" class="empty-comment">暂无评论，快来抢沙发吧</view>
+    </view>
   </view>
 </view>
