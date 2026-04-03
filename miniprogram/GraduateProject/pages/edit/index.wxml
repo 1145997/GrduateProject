@@ -1,0 +1,93 @@
+<view class="container">
+  <view class="card">
+    <view class="section-title">信息类型</view>
+    <view class="type-row">
+      <block wx:for="{{typeOptions}}" wx:key="value">
+        <view
+          class="type-item {{form.type === item.value ? 'active' : ''}}"
+          data-value="{{item.value}}"
+          bindtap="onTypeChange"
+        >
+          {{item.label}}
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="form-item">
+      <view class="label">标题</view>
+      <input class="input" placeholder="请输入标题" value="{{form.title}}" data-field="title" bindinput="onInput" />
+    </view>
+
+    <view class="form-item">
+      <view class="label">物品名称</view>
+      <input class="input" placeholder="请输入物品名称" value="{{form.itemName}}" data-field="itemName" bindinput="onInput" />
+    </view>
+
+    <view class="form-item">
+      <view class="label">分类</view>
+      <picker mode="selector" range="{{categoryNames}}" value="{{categoryIndex}}" bindchange="onCategoryChange">
+        <view class="picker">
+          {{categoryIndex >= 0 ? categoryNames[categoryIndex] : '请选择分类'}}
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <view class="label">品牌</view>
+      <input class="input" placeholder="可不填" value="{{form.brand}}" data-field="brand" bindinput="onInput" />
+    </view>
+
+    <view class="form-item">
+      <view class="label">颜色</view>
+      <input class="input" placeholder="可不填" value="{{form.color}}" data-field="color" bindinput="onInput" />
+    </view>
+
+    <view class="form-item">
+      <view class="label">事件地点</view>
+      <input class="input" placeholder="请输入丢失/拾取地点" value="{{form.eventPlace}}" data-field="eventPlace" bindinput="onInput" />
+    </view>
+
+    <view class="form-item">
+      <view class="label">事件时间</view>
+      <input class="input" placeholder="例如：2026-04-03 14:30" value="{{form.eventTime}}" data-field="eventTime" bindinput="onInput" />
+    </view>
+
+    <view class="form-item">
+      <view class="label">详细描述</view>
+      <textarea class="textarea" placeholder="请输入详细描述" value="{{form.description}}" data-field="description" bindinput="onInput" />
+    </view>
+
+    <view class="form-item">
+      <view class="label">上传图片</view>
+      <view wx:if="{{form.image}}" class="upload-box" bindtap="previewImage">
+        <image class="upload-image" src="{{form.image}}" mode="aspectFill" />
+      </view>
+      <view wx:else class="upload-box" bindtap="chooseImage">
+        <view class="upload-placeholder">点击上传图片</view>
+      </view>
+
+      <button class="reupload-btn" bindtap="chooseImage">重新选择图片</button>
+    </view>
+
+    <view class="form-item">
+      <view class="label">联系人</view>
+      <input class="input" placeholder="请输入联系人姓名" value="{{form.contactName}}" data-field="contactName" bindinput="onInput" />
+    </view>
+
+    <view class="form-item">
+      <view class="label">联系电话</view>
+      <input class="input" placeholder="请输入联系电话" value="{{form.contactPhone}}" data-field="contactPhone" bindinput="onInput" />
+    </view>
+
+    <view class="form-item">
+      <view class="label">联系微信</view>
+      <input class="input" placeholder="可不填" value="{{form.contactWechat}}" data-field="contactWechat" bindinput="onInput" />
+    </view>
+  </view>
+
+  <button class="submit-btn btn-primary" loading="{{submitting}}" bindtap="submit">
+    保存修改
+  </button>
+</view>

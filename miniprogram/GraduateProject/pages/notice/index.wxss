@@ -1,0 +1,53 @@
+.notice-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.notice-top {
+  margin-bottom: 16rpx;
+}
+
+.notice-title-wrap {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.top-tag {
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  background: #fee2e2;
+  color: #dc2626;
+  font-size: 22rpx;
+}
+
+.notice-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #222;
+  line-height: 1.5;
+}
+
+.notice-content {
+  font-size: 27rpx;
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 16rpx;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.notice-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.empty {
+  text-align: center;
+  padding: 40rpx 0;
+  color: #999;
+}

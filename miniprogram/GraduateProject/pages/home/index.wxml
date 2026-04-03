@@ -1,0 +1,58 @@
+<view class="container">
+  <view class="card search-box">
+    <input
+      class="search-input"
+      placeholder="搜索标题、物品名称、地点"
+      value="{{keyword}}"
+      bindinput="onKeywordInput"
+    />
+    <button class="search-btn btn-primary" bindtap="onSearch">搜索</button>
+  </view>
+
+  <view class="tabs">
+    <block wx:for="{{tabs}}" wx:key="value">
+      <view
+        class="tab-item {{currentType === item.value ? 'active' : ''}}"
+        data-type="{{item.value}}"
+        bindtap="changeTab"
+      >
+        {{item.label}}
+      </view>
+    </block>
+  </view>
+
+  <block wx:if="{{list.length}}">
+    <block wx:for="{{list}}" wx:key="id">
+      <view class="card info-card" data-id="{{item.id}}" bindtap="goDetail">
+        <image
+          class="thumb"
+          src="{{item.image || '/assets/default.png'}}"
+          mode="aspectFill"
+        />
+        <view class="info-main">
+          <view class="title-row">
+            <text class="title">{{item.title}}</text>
+          </view>
+
+          <view class="meta-row">
+            <text class="tag {{item.type == 1 ? 'tag-lost' : 'tag-found'}}">
+              {{item.type == 1 ? '寻物' : '招领'}}
+            </text>
+            <text class="tag tag-status">浏览 {{item.viewCount}}</text>
+          </view>
+
+          <view class="desc">物品：{{item.itemName}}</view>
+          <view class="desc">地点：{{item.eventPlace}}</view>
+          <view class="desc">联系人：{{item.contactName}}</view>
+          <view class="time text-muted">{{item.createTime}}</view>
+        </view>
+      </view>
+    </block>
+  </block>
+
+  <view wx:else class="empty">暂无数据</view>
+
+  <view class="load-text text-muted">
+    {{finished ? '没有更多了' : (loading ? '加载中...' : '')}}
+  </view>
+</view>

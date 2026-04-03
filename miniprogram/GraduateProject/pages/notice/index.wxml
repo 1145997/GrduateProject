@@ -1,0 +1,19 @@
+<view class="container">
+  <block wx:if="{{list.length}}">
+    <block wx:for="{{list}}" wx:key="id">
+      <view class="card notice-card" data-id="{{item.id}}" bindtap="goDetail">
+        <view class="notice-top">
+          <view class="notice-title-wrap">
+            <text wx:if="{{item.isTop == 1}}" class="top-tag">置顶</text>
+            <text class="notice-title">{{item.title}}</text>
+          </view>
+        </view>
+
+        <view class="notice-content">{{item.content}}</view>
+        <view class="notice-time">{{item.createTime}}</view>
+      </view>
+    </block>
+  </block>
+
+  <view wx:else class="empty">暂无公告</view>
+</view>

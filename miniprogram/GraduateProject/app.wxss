@@ -1,10 +1,56 @@
-/**app.wxss**/
+page {
+  background: #f6f7fb;
+  color: #333;
+  font-size: 28rpx;
+}
+
 .container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: 200rpx 0;
-  box-sizing: border-box;
-} 
+  padding: 24rpx;
+}
+
+.card {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.04);
+}
+
+.btn-primary {
+  background: #3b82f6;
+  color: #fff;
+  border-radius: 14rpx;
+}
+
+.btn-danger {
+  background: #ef4444;
+  color: #fff;
+  border-radius: 14rpx;
+}
+
+.text-muted {
+  color: #888;
+}
+
+.tag {
+  display: inline-block;
+  padding: 8rpx 18rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  margin-right: 12rpx;
+}
+
+.tag-lost {
+  background: #eef4ff;
+  color: #3b82f6;
+}
+
+.tag-found {
+  background: #ecfdf5;
+  color: #10b981;
+}
+
+.tag-status {
+  background: #f3f4f6;
+  color: #666;
+}

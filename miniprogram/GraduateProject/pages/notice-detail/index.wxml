@@ -1,0 +1,14 @@
+<view class="container" wx:if="{{detail}}">
+  <view class="card">
+    <view class="title-row">
+      <text wx:if="{{detail.isTop == 1}}" class="top-tag">置顶公告</text>
+      <view class="detail-title">{{detail.title}}</view>
+    </view>
+
+    <view class="detail-time">发布时间：{{detail.createTime}}</view>
+
+    <view class="content-box">
+      <rich-text nodes="{{detail.content}}"></rich-text>
+    </view>
+  </view>
+</view>

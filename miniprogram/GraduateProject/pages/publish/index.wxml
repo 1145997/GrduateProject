@@ -1,0 +1,106 @@
+<view class="container">
+  <view class="card">
+    <view class="section-title">信息类型</view>
+    <view class="type-row">
+      <block wx:for="{{typeOptions}}" wx:key="value">
+        <view
+          class="type-item {{form.type === item.value ? 'active' : ''}}"
+          data-value="{{item.value}}"
+          bindtap="onTypeChange"
+        >
+          {{item.label}}
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="form-item">
+      <view class="label">标题</view>
+      <input class="input" placeholder="请输入标题" value="{{form.title}}" data-field="title" bindinput="onInput" />
+    </view>
+
+    <view class="form-item">
+      <view class="label">物品名称</view>
+      <input class="input" placeholder="请输入物品名称" value="{{form.itemName}}" data-field="itemName" bindinput="onInput" />
+    </view>
+
+    <view class="form-item">
+      <view class="label">分类</view>
+      <picker mode="selector" range="{{categoryNames}}" value="{{categoryIndex}}" bindchange="onCategoryChange">
+        <view class="picker">
+          {{categoryIndex >= 0 ? categoryNames[categoryIndex] : '请选择分类'}}
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <view class="label">品牌</view>
+      <input class="input" placeholder="可不填" value="{{form.brand}}" data-field="brand" bindinput="onInput" />
+    </view>
+
+    <view class="form-item">
+      <view class="label">颜色</view>
+      <input class="input" placeholder="可不填" value="{{form.color}}" data-field="color" bindinput="onInput" />
+    </view>
+
+    <view class="form-item">
+      <view class="label">事件地点</view>
+      <input class="input" placeholder="请输入丢失/拾取地点" value="{{form.eventPlace}}" data-field="eventPlace" bindinput="onInput" />
+    </view>
+
+    <view class="form-item">
+  <view class="label">事件时间</view>
+
+  <view class="datetime-box">
+    <picker mode="date" value="{{eventDate}}" bindchange="onDateChange">
+      <view class="picker-value">
+        {{eventDate || '请选择日期'}}
+      </view>
+    </picker>
+
+    <picker mode="time" value="{{eventClock}}" bindchange="onTimeChange">
+      <view class="picker-value">
+        {{eventClock || '请选择时间'}}
+      </view>
+    </picker>
+  </view>
+
+  <view class="datetime-preview">
+    {{form.eventTime || '请选择完整事件时间'}}
+  </view>
+</view>
+
+    <view class="form-item">
+      <view class="label">详细描述</view>
+      <textarea class="textarea" placeholder="请输入详细描述" value="{{form.description}}" data-field="description" bindinput="onInput" />
+    </view>
+
+    <view class="form-item">
+      <view class="label">上传图片</view>
+      <view class="upload-box" bindtap="chooseImage">
+        <image wx:if="{{form.image}}" class="upload-image" src="{{form.image}}" mode="aspectFill" />
+        <view wx:else class="upload-placeholder">点击上传图片</view>
+      </view>
+    </view>
+
+    <view class="form-item">
+      <view class="label">联系人</view>
+      <input class="input" placeholder="请输入联系人姓名" value="{{form.contactName}}" data-field="contactName" bindinput="onInput" />
+    </view>
+
+    <view class="form-item">
+      <view class="label">联系电话</view>
+      <input class="input" placeholder="请输入联系电话" value="{{form.contactPhone}}" data-field="contactPhone" bindinput="onInput" />
+    </view>
+
+    <view class="form-item">
+      <view class="label">联系微信</view>
+      <input class="input" placeholder="可不填" value="{{form.contactWechat}}" data-field="contactWechat" bindinput="onInput" />
+    </view>
+  </view>
+
+  <button class="submit-btn btn-primary" loading="{{submitting}}" bindtap="submit">
+    提交发布
+  </button>
+</view>

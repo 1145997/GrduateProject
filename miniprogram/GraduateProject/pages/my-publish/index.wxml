@@ -1,0 +1,34 @@
+<view class="container">
+  <block wx:if="{{list.length}}">
+    <block wx:for="{{list}}" wx:key="id">
+      <view class="card info-card">
+        <view class="info-main" bindtap="goDetail" data-id="{{item.id}}">
+          <view class="title">{{item.title}}</view>
+
+          <view class="meta-row">
+            <text class="tag {{item.type == 1 ? 'tag-lost' : 'tag-found'}}">
+              {{item.type == 1 ? '寻物' : '招领'}}
+            </text>
+            <text class="tag tag-status">{{getStatusText(item.status)}}</text>
+          </view>
+
+          <view class="desc">物品：{{item.itemName}}</view>
+          <view class="desc">地点：{{item.eventPlace}}</view>
+          <view class="desc">联系人：{{item.contactName}}</view>
+          <view class="time text-muted">发布时间：{{item.createTime}}</view>
+        </view>
+
+        <view class="op-row">
+          <button class="mini-btn" data-id="{{item.id}}" bindtap="goDetail">查看</button>
+          <button class="mini-btn danger" data-id="{{item.id}}" bindtap="deleteItem">删除</button>
+        </view>
+      </view>
+    </block>
+  </block>
+
+  <view wx:else class="empty">你还没有发布过信息</view>
+
+  <view class="load-text text-muted">
+    {{finished ? '没有更多了' : (loading ? '加载中...' : '')}}
+  </view>
+</view>

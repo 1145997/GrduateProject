@@ -1,0 +1,33 @@
+.title-row {
+  margin-bottom: 20rpx;
+}
+
+.top-tag {
+  display: inline-block;
+  margin-bottom: 16rpx;
+  padding: 8rpx 18rpx;
+  border-radius: 999rpx;
+  background: #fee2e2;
+  color: #dc2626;
+  font-size: 24rpx;
+}
+
+.detail-title {
+  font-size: 38rpx;
+  font-weight: 700;
+  color: #222;
+  line-height: 1.6;
+}
+
+.detail-time {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 28rpx;
+}
+
+.content-box {
+  font-size: 30rpx;
+  color: #444;
+  line-height: 1.9;
+  word-break: break-all;
+}

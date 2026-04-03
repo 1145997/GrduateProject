@@ -1,0 +1,91 @@
+.section-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  margin-bottom: 20rpx;
+}
+
+.type-row {
+  display: flex;
+  gap: 20rpx;
+}
+
+.type-item {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 0;
+  border-radius: 16rpx;
+  background: #f3f4f6;
+  color: #666;
+}
+
+.type-item.active {
+  background: #3b82f6;
+  color: #fff;
+}
+
+.form-item {
+  margin-bottom: 24rpx;
+}
+
+.label {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 14rpx;
+}
+
+.input,
+.picker {
+  height: 76rpx;
+  line-height: 76rpx;
+  background: #f7f8fb;
+  border-radius: 14rpx;
+  padding: 0 24rpx;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 220rpx;
+  background: #f7f8fb;
+  border-radius: 14rpx;
+  padding: 20rpx 24rpx;
+  box-sizing: border-box;
+}
+
+.upload-box {
+  width: 220rpx;
+  height: 220rpx;
+  background: #f7f8fb;
+  border-radius: 18rpx;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-image {
+  width: 100%;
+  height: 100%;
+}
+
+.upload-placeholder {
+  color: #999;
+  font-size: 26rpx;
+}
+
+.reupload-btn {
+  margin-top: 18rpx;
+  height: 70rpx;
+  line-height: 70rpx;
+  font-size: 26rpx;
+  background: #f3f4f6;
+  color: #333;
+  border-radius: 12rpx;
+}
+
+.submit-btn {
+  margin-top: 24rpx;
+  height: 88rpx;
+  line-height: 88rpx;
+  font-size: 30rpx;
+  border-radius: 16rpx;
+}
