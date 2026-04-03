@@ -6,7 +6,6 @@ import { useSettingsStore } from "@/pinia/stores/settings"
 import { useUserStore } from "@/pinia/stores/user"
 import { loginApi } from "./apis"
 import { usePermissionStore } from "@/pinia/stores/permission"
-import { router } from "@/router"
 import { routerConfig } from "@/router/config"
 
 
