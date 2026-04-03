@@ -1,10 +1,10 @@
 import { getAdminInfoApi, logoutApi } from "@/pages/login/apis"
 import { setToken as _setToken, getToken, removeToken } from "@@/utils/local-storage"
 import { pinia } from "@/pinia"
-import { resetRouter } from "@/router"
 import { routerConfig } from "@/router/config"
 import { useSettingsStore } from "./settings"
 import { useTagsViewStore } from "./tags-view"
+import { router, resetRouter } from "@/router"
 
 export const useUserStore = defineStore("user", () => {
   const token = ref<string>(getToken() || "")
@@ -36,10 +36,9 @@ export const useUserStore = defineStore("user", () => {
     removeToken()
     token.value = ""
     roles.value = []
-    username.value = ""
-    nickname.value = ""
     resetRouter()
     resetTagsView()
+    await router.replace("/login")
   }
 
   const resetToken = () => {

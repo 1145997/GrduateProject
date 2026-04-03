@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import * as echarts from "echarts"
 import {
   getOverview,
   getRecent7DaysTrend,
@@ -24,6 +25,12 @@ const overview = reactive<OverviewData>({
 
 const trendList = ref<TrendItem[]>([])
 
+const lineChartRef = ref<HTMLDivElement | null>(null)
+const pieChartRef = ref<HTMLDivElement | null>(null)
+
+let lineChart: echarts.ECharts | null = null
+let pieChart: echarts.ECharts | null = null
+
 const cardList = computed(() => [
   { label: "用户总数", value: overview.totalUsers },
   { label: "信息总数", value: overview.totalInfos },
@@ -33,6 +40,84 @@ const cardList = computed(() => [
   { label: "已驳回", value: overview.rejectedInfos },
   { label: "公告总数", value: overview.totalNotices }
 ])
+
+function renderLineChart() {
+  if (!lineChartRef.value) return
+
+  if (!lineChart) {
+    lineChart = echarts.init(lineChartRef.value)
+  }
+
+  lineChart.setOption({
+    tooltip: {
+      trigger: "axis"
+    },
+    grid: {
+      left: 40,
+      right: 20,
+      top: 30,
+      bottom: 40
+    },
+    xAxis: {
+      type: "category",
+      data: trendList.value.map(item => item.date),
+      boundaryGap: false
+    },
+    yAxis: {
+      type: "value",
+      minInterval: 1
+    },
+    series: [
+      {
+        name: "发布数量",
+        type: "line",
+        smooth: true,
+        data: trendList.value.map(item => item.count),
+        areaStyle: {}
+      }
+    ]
+  })
+}
+
+function renderPieChart() {
+  if (!pieChartRef.value) return
+
+  if (!pieChart) {
+    pieChart = echarts.init(pieChartRef.value)
+  }
+
+  pieChart.setOption({
+    tooltip: {
+      trigger: "item"
+    },
+    legend: {
+      bottom: 0
+    },
+    series: [
+      {
+        name: "信息状态分布",
+        type: "pie",
+        radius: ["45%", "70%"],
+        center: ["50%", "45%"],
+        avoidLabelOverlap: true,
+        label: {
+          formatter: "{b}: {c}"
+        },
+        data: [
+          { name: "待审核", value: overview.pendingInfos },
+          { name: "已发布", value: overview.publishedInfos },
+          { name: "已完结", value: overview.finishedInfos },
+          { name: "已驳回", value: overview.rejectedInfos }
+        ]
+      }
+    ]
+  })
+}
+
+function renderCharts() {
+  renderLineChart()
+  renderPieChart()
+}
 
 async function fetchData() {
   loading.value = true
@@ -44,13 +129,30 @@ async function fetchData() {
 
     Object.assign(overview, overviewRes.data)
     trendList.value = trendRes.data.list || []
+
+    await nextTick()
+    renderCharts()
   } finally {
     loading.value = false
   }
 }
 
-onMounted(() => {
-  fetchData()
+function handleResize() {
+  lineChart?.resize()
+  pieChart?.resize()
+}
+
+onMounted(async () => {
+  await fetchData()
+  window.addEventListener("resize", handleResize)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", handleResize)
+  lineChart?.dispose()
+  pieChart?.dispose()
+  lineChart = null
+  pieChart = null
 })
 </script>
 
@@ -79,42 +181,16 @@ onMounted(() => {
           <template #header>
             <div class="block-title">近 7 天发布趋势</div>
           </template>
-
-          <el-table :data="trendList" border>
-            <el-table-column prop="date" label="日期" min-width="180" />
-            <el-table-column prop="count" label="发布数量" min-width="120" align="center" />
-          </el-table>
+          <div ref="lineChartRef" class="chart-box" />
         </el-card>
       </el-col>
 
       <el-col :xs="24" :lg="8">
         <el-card shadow="never">
           <template #header>
-            <div class="block-title">系统概览</div>
+            <div class="block-title">信息状态分布</div>
           </template>
-
-          <div class="summary-list">
-            <div class="summary-item">
-              <span>当前待审核信息</span>
-              <strong>{{ overview.pendingInfos }}</strong>
-            </div>
-            <div class="summary-item">
-              <span>当前已发布信息</span>
-              <strong>{{ overview.publishedInfos }}</strong>
-            </div>
-            <div class="summary-item">
-              <span>当前已驳回信息</span>
-              <strong>{{ overview.rejectedInfos }}</strong>
-            </div>
-            <div class="summary-item">
-              <span>当前公告总数</span>
-              <strong>{{ overview.totalNotices }}</strong>
-            </div>
-            <div class="summary-item">
-              <span>平台注册用户数</span>
-              <strong>{{ overview.totalUsers }}</strong>
-            </div>
-          </div>
+          <div ref="pieChartRef" class="chart-box" />
         </el-card>
       </el-col>
     </el-row>
@@ -175,27 +251,8 @@ onMounted(() => {
   font-weight: 600;
 }
 
-.summary-list {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.summary-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 14px;
-  border-radius: 10px;
-  background: var(--el-fill-color-light);
-
-  span {
-    color: var(--el-text-color-regular);
-  }
-
-  strong {
-    font-size: 18px;
-    color: var(--el-text-color-primary);
-  }
+.chart-box {
+  width: 100%;
+  height: 360px;
 }
 </style>

@@ -62,7 +62,7 @@ public class AdminTokenUtils {
             throw new RuntimeException("管理员未登录或token不存在");
         }
 
-        String token = tokenHeader.substring(tokenPrefix.length());
+        String token = tokenHeader.substring(tokenPrefix.length()).trim();
         Claims claims = jwtUtils.parseToken(token);
 
         String role = claims.get("role", String.class);

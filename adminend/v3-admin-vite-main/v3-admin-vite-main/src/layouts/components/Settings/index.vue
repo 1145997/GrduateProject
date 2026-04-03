@@ -12,15 +12,11 @@ const settingsStore = useSettingsStore()
 // 使用 storeToRefs 将提取的属性保持其响应性
 const {
   showTagsView,
-  showLogo,
   fixedHeader,
-  showFooter,
   showNotify,
   showThemeSwitch,
   showScreenfull,
   showSearchMenu,
-  cacheTagsView,
-  showWatermark,
   showGreyMode,
   showColorWeakness
 } = storeToRefs(settingsStore)
@@ -28,15 +24,11 @@ const {
 /** 定义 switch 设置项 */
 const switchSettings = {
   "显示标签栏": showTagsView,
-  "显示 Logo": showLogo,
   "固定 Header": fixedHeader,
-  "显示页脚": showFooter,
   "显示消息通知": showNotify,
   "显示切换主题按钮": showThemeSwitch,
   "显示全屏按钮": showScreenfull,
   "显示搜索按钮": showSearchMenu,
-  "是否缓存标签栏": cacheTagsView,
-  "开启系统水印": showWatermark,
   "显示灰色模式": showGreyMode,
   "显示色弱模式": showColorWeakness
 }

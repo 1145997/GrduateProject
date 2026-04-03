@@ -8,11 +8,11 @@ import { CacheKey } from "@@/constants/cache-key"
 
 // #region Token
 export function getToken() {
-  return localStorage.getItem(CacheKey.TOKEN)
+  return (localStorage.getItem(CacheKey.TOKEN) || "").trim()
 }
 
 export function setToken(token: string) {
-  localStorage.setItem(CacheKey.TOKEN, token)
+  localStorage.setItem(CacheKey.TOKEN, (token || "").trim())
 }
 
 export function removeToken() {

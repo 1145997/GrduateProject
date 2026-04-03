@@ -39,14 +39,14 @@ const DEFAULT_CONFIG: LayoutsConfig = {
   showSettings: true,
   showTagsView: true,
   fixedHeader: true,
-  showFooter: true,
-  showLogo: true,
-  showNotify: true,
+  showFooter: false,
+  showLogo: false,
+  showNotify: false,
   showThemeSwitch: true,
   showScreenfull: true,
   showSearchMenu: true,
   cacheTagsView: false,
-  showWatermark: true,
+  showWatermark: false,
   showGreyMode: false,
   showColorWeakness: false
 }
