@@ -9,7 +9,9 @@
             <text class="tag {{item.type == 1 ? 'tag-lost' : 'tag-found'}}">
               {{item.type == 1 ? '寻物' : '招领'}}
             </text>
-            <text class="tag tag-status">{{getStatusText(item.status)}}</text>
+            <text class="tag {{getStatusClass(item.status)}}">
+              {{getStatusText(item.status)}}
+            </text>
           </view>
 
           <view class="desc">物品：{{item.itemName}}</view>
@@ -20,6 +22,25 @@
 
         <view class="op-row">
           <button class="mini-btn" data-id="{{item.id}}" bindtap="goDetail">查看</button>
+
+          <button
+            wx:if="{{item.status == 1}}"
+            class="mini-btn finish-btn"
+            data-id="{{item.id}}"
+            bindtap="finishItem"
+          >
+            已发布
+          </button>
+
+          <button
+            wx:if="{{item.status == 2}}"
+            class="mini-btn reopen-btn"
+            data-id="{{item.id}}"
+            bindtap="reopenItem"
+          >
+            已完成
+          </button>
+
           <button class="mini-btn danger" data-id="{{item.id}}" bindtap="deleteItem">删除</button>
         </view>
       </view>

@@ -231,4 +231,50 @@ public class LostFoundServiceImpl extends ServiceImpl<LostFoundMapper, LostFound
 
         return voPage;
     }
+
+    @Override
+    public void finishMyById(Long id) {
+        Long currentUserId = userTokenUtils.getCurrentUserId();
+
+        LostFound lostFound = this.getById(id);
+        if (lostFound == null) {
+            throw new RuntimeException("信息不存在");
+        }
+
+        if (!currentUserId.equals(lostFound.getUserId())) {
+            throw new RuntimeException("无权操作他人发布的信息");
+        }
+
+        if (lostFound.getStatus() == null || lostFound.getStatus() != 1) {
+            throw new RuntimeException("当前状态不允许完结，只有已发布的信息才能标记为已完成");
+        }
+
+        lostFound.setStatus(2);
+        lostFound.setFinishTime(java.time.LocalDateTime.now());
+
+        this.updateById(lostFound);
+    }
+
+    @Override
+    public void reopenMyById(Long id) {
+        Long currentUserId = userTokenUtils.getCurrentUserId();
+
+        LostFound lostFound = this.getById(id);
+        if (lostFound == null) {
+            throw new RuntimeException("信息不存在");
+        }
+
+        if (!currentUserId.equals(lostFound.getUserId())) {
+            throw new RuntimeException("无权操作他人发布的信息");
+        }
+
+        if (lostFound.getStatus() == null || lostFound.getStatus() != 2) {
+            throw new RuntimeException("当前状态不允许恢复，只有已完成的信息才能恢复");
+        }
+
+        lostFound.setStatus(1);
+        lostFound.setFinishTime(null);
+
+        this.updateById(lostFound);
+    }
 }

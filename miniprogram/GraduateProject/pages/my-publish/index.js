@@ -64,6 +64,62 @@ Page({
     })
   },
 
+  finishItem(e) {
+    const id = e.currentTarget.dataset.id
+
+    wx.showModal({
+      title: "提示",
+      content: "确认将这条信息标记为已完成吗？",
+      success: async (res) => {
+        if (!res.confirm) return
+
+        try {
+          await request({
+            url: `/lostfound/${id}/finish`,
+            method: "PUT"
+          })
+
+          wx.showToast({
+            title: "已标记为完成",
+            icon: "success"
+          })
+
+          this.getList(true)
+        } catch (e) {
+          console.error("标记完成失败", e)
+        }
+      }
+    })
+  },
+
+  reopenItem(e) {
+    const id = e.currentTarget.dataset.id
+
+    wx.showModal({
+      title: "提示",
+      content: "确认将这条信息恢复为进行中吗？",
+      success: async (res) => {
+        if (!res.confirm) return
+
+        try {
+          await request({
+            url: `/lostfound/${id}/reopen`,
+            method: "PUT"
+          })
+
+          wx.showToast({
+            title: "已恢复为进行中",
+            icon: "success"
+          })
+
+          this.getList(true)
+        } catch (e) {
+          console.error("恢复失败", e)
+        }
+      }
+    })
+  },
+
   deleteItem(e) {
     const id = e.currentTarget.dataset.id
 
@@ -100,9 +156,19 @@ Page({
     const map = {
       0: "待审核",
       1: "已发布",
-      2: "已驳回",
-      3: "已完结"
+      2: "已完成",
+      3: "已驳回"
     }
     return map[status] || "未知状态"
+  },
+
+  getStatusClass(status) {
+    const map = {
+      0: "status-pending",
+      1: "status-published",
+      2: "status-finished",
+      3: "status-rejected"
+    }
+    return map[status] || ""
   }
 })

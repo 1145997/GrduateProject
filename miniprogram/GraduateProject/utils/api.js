@@ -1,4 +1,6 @@
-const BASE_URL = "http://127.0.0.1:8080/api"
+const BASE_URL = "http://8.133.16.236/api"
+
+// const BASE_URL = "http://127.0.0.1/api"
 
 // true：开发期 mock 登录
 // false：真实微信登录

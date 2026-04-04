@@ -31,7 +31,7 @@
 
 .op-row {
   display: flex;
-  gap: 20rpx;
+  gap: 16rpx;
   padding-top: 20rpx;
   border-top: 1rpx solid #f2f2f2;
 }
@@ -47,6 +47,36 @@
 }
 
 .mini-btn.danger {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.finish-btn {
+  background: #ecfdf5;
+  color: #16a34a;
+}
+
+.reopen-btn {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.status-pending {
+  background: #f3f4f6;
+  color: #666;
+}
+
+.status-active {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.status-finished {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.status-rejected {
   background: #fee2e2;
   color: #dc2626;
 }

@@ -82,4 +82,18 @@ public class LostFoundController {
         lostFoundService.updateMyById(id, dto);
         return Result.success("修改成功，已重新进入审核", null);
     }
+
+    @PutMapping("/{id}/finish")
+    public Result<Void> finish(@PathVariable Long id) {
+        userTokenUtils.checkUserLogin();
+        lostFoundService.finishMyById(id);
+        return Result.success("已标记为完成", null);
+    }
+
+    @PutMapping("/{id}/reopen")
+    public Result<Void> reopen(@PathVariable Long id) {
+        userTokenUtils.checkUserLogin();
+        lostFoundService.reopenMyById(id);
+        return Result.success("已恢复为进行中", null);
+    }
 }
