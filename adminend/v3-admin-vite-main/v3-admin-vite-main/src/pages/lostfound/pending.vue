@@ -55,18 +55,18 @@ function getStatusText(status: number) {
   const map: Record<number, string> = {
     0: "待审核",
     1: "已发布",
-    2: "已驳回",
-    3: "已完结"
+    2: "已完结",
+    3: "已驳回"
   }
   return map[status] || "未知"
 }
 
 function getStatusTagType(status: number) {
-  const map: Record<number, "" | "success" | "warning" | "danger" | "info"> = {
+  const map: Record<number, "" | "success" | "warning" | "info" | "danger"> = {
     0: "warning",
     1: "success",
-    2: "danger",
-    3: "info"
+    2: "info"   ,
+    3: "danger"
   }
   return map[status] || "info"
 }

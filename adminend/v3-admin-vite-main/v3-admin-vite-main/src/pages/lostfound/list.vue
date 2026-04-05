@@ -39,18 +39,18 @@ function getStatusText(status: number) {
   const map: Record<number, string> = {
     0: "待审核",
     1: "已发布",
-    2: "已驳回",
-    3: "已完结"
+    2: "已完结",
+    3: "已驳回"
   }
   return map[status] || "未知"
 }
 
 function getStatusTagType(status: number) {
-  const map: Record<number, "" | "success" | "warning" | "danger" | "info"> = {
+  const map: Record<number, "" | "success" | "warning" | "info" | "danger"> = {
     0: "warning",
     1: "success",
-    2: "danger",
-    3: "info"
+    2: "info"   ,
+    3: "danger"
   }
   return map[status] || "info"
 }
@@ -128,8 +128,8 @@ onMounted(() => {
           <el-select v-model="queryForm.status" placeholder="请选择状态" clearable style="width: 160px">
             <el-option label="待审核" :value="0" />
             <el-option label="已发布" :value="1" />
-            <el-option label="已驳回" :value="2" />
-            <el-option label="已完结" :value="3" />
+            <el-option label="已完结" :value="2" />
+            <el-option label="已驳回" :value="3" />
           </el-select>
         </el-form-item>
 
